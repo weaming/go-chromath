@@ -58,6 +58,19 @@ var SpaceAppleRGB = RGBSpace{
 	&GammaCompander,
 }
 
+// from https://en.wikipedia.org/wiki/DCI-P3#P3_colorimetry
+var SpaceDisplayP3RGB = RGBSpace{
+	"Display P3 RGB", "Display P3 RGB",
+	XyYPrimary{
+		0.680, 0.320,
+		0.265, 0.690,
+		0.150, 0.060,
+	},
+	&IlluminantRefD65,
+	Gamma22,
+	&GammaCompander,
+}
+
 var SpaceBestRGB = RGBSpace{
 	"Best RGB", "Best RGB",
 	XyYPrimary{
