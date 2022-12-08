@@ -140,7 +140,7 @@ type Scaler interface {
 	// implementing the scaler before Scale or ScaleInv is called. A runtime panic
 	// may occur if this is not done.
 	Init(*RGBSpace) Scaler
-	// Scale 
+	// Scale
 	Scale(Point) Point
 	ScaleInv(Point) Point
 }

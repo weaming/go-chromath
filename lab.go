@@ -20,8 +20,8 @@ func NewLabTransformer(refIlluminant *IlluminantRef) *LabTransformer {
 // Convert converts a LAB point to XYZ
 func (t *LabTransformer) Convert(p Lab) XYZ {
 	fy := (p.L() + 16.0) / 116.0
-	fx := 0.002 * p.A() + fy
-	fz := fy - 0.005 * p.B()
+	fx := 0.002*p.A() + fy
+	fz := fy - 0.005*p.B()
 
 	fx3 := fx * fx * fx
 	fz3 := fz * fz * fz
@@ -30,7 +30,7 @@ func (t *LabTransformer) Convert(p Lab) XYZ {
 	if fx3 > CIEEps {
 		xr = fx3
 	} else {
-		xr = (116.0 * fx - 16.0) / CIEKappa
+		xr = (116.0*fx - 16.0) / CIEKappa
 	}
 
 	if p.L() > CIEKappa*CIEEps {
@@ -42,7 +42,7 @@ func (t *LabTransformer) Convert(p Lab) XYZ {
 	if fz3 > CIEEps {
 		zr = fz3
 	} else {
-		zr = (116.0 * fz - 16.0) / CIEKappa
+		zr = (116.0*fz - 16.0) / CIEKappa
 	}
 	return XYZ{xr * t.refWp.X(), yr * t.refWp.Y(), zr * t.refWp.Z()}
 }
@@ -55,20 +55,20 @@ func (t *LabTransformer) Invert(p XYZ) Lab {
 	if xr > CIEEps {
 		fx = math.Cbrt(xr)
 	} else {
-		fx = (CIEKappa * xr + 16.0) / 116.0
+		fx = (CIEKappa*xr + 16.0) / 116.0
 	}
 	if yr > CIEEps {
 		fy = math.Cbrt(yr)
 	} else {
-		fy = (CIEKappa * yr + 16.0) / 116.0
+		fy = (CIEKappa*yr + 16.0) / 116.0
 	}
 	if zr > CIEEps {
 		fz = math.Cbrt(zr)
 	} else {
-		fz = (CIEKappa * zr + 16.0) / 116.0
+		fz = (CIEKappa*zr + 16.0) / 116.0
 	}
 
-	return Lab{116 * fy - 16.0, 500.0 * (fx - fy), 200.0 * (fy - fz)}
+	return Lab{116*fy - 16.0, 500.0 * (fx - fy), 200.0 * (fy - fz)}
 }
 
 // LCh returns the LAB point as an LCh(ab) point (Lab in cylindrical coordinates)
@@ -84,14 +84,15 @@ func (p Lab) LCh() LCh {
 
 // Lab returns the LCh(ab) point as LAB
 func (p LCh) Lab() Lab {
-	a := p.C() * math.Cos(p.H() * math.Pi / 180.0)
-	b := p.C() * math.Sin(p.H() * math.Pi / 180.0)
+	a := p.C() * math.Cos(p.H()*math.Pi/180.0)
+	b := p.C() * math.Sin(p.H()*math.Pi/180.0)
 	p[1], p[2] = a, b
 	return Lab(p)
 }
 
 // LCh2LabTransformer is a transformer from LAB to LCh(ab)
-type LCh2LabTransformer struct {}
+type LCh2LabTransformer struct{}
+
 var lCh2LabTransformerInst LCh2LabTransformer
 
 // NewLCh2LabTransformer creates a CIELAB ⇔ CIELCh(ab) transformer

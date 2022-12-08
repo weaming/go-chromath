@@ -1,9 +1,10 @@
 package chromath
 
 import (
-	"testing"
 	"math"
-	"github.com/jkl1337/go-chromath/testnum"
+	"testing"
+
+	"github.com/weaming/go-chromath/testnum"
 )
 
 func testPointEqual(t *testing.T, a Point, b Point) {
@@ -13,9 +14,9 @@ func testPointEqual(t *testing.T, a Point, b Point) {
 }
 
 func testPointAlmostEqual(t *testing.T, a Point, b Point, places int) {
-	if testnum.Round(math.Abs(a[0] - b[0]), places) != 0 ||
-		testnum.Round(math.Abs(a[1] - b[1]), places) != 0 ||
-		testnum.Round(math.Abs(a[2] - b[2]), places) != 0 {
+	if testnum.Round(math.Abs(a[0]-b[0]), places) != 0 ||
+		testnum.Round(math.Abs(a[1]-b[1]), places) != 0 ||
+		testnum.Round(math.Abs(a[2]-b[2]), places) != 0 {
 		t.Errorf("Point %v !~ %v", a, b)
 	}
 }
@@ -139,5 +140,3 @@ func BenchmarkSRGBCompand(b *testing.B) {
 		p = c.Linearize(p)
 	}
 }
-
-

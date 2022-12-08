@@ -3,7 +3,6 @@
 package deltae
 
 import (
-	. "github.com/jkl1337/go-chromath"
 	"math"
 )
 

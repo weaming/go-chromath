@@ -22,9 +22,9 @@ var Scaler8bClamping scaler8bClamping
 func (*scaler8bClamping) Init(ws *RGBSpace) Scaler { return &Scaler8bClamping }
 
 func (*scaler8bClamping) Scale(p Point) Point {
-	p[0] *= (1/255.0)
-	p[1] *= (1/255.0)
-	p[2] *= (1/255.0)
+	p[0] *= (1 / 255.0)
+	p[1] *= (1 / 255.0)
+	p[2] *= (1 / 255.0)
 	return p
 }
 
@@ -43,9 +43,9 @@ var Scaler16bClamping scaler16bClamping
 func (*scaler16bClamping) Init(ws *RGBSpace) Scaler { return &Scaler16bClamping }
 
 func (*scaler16bClamping) Scale(p Point) Point {
-	p[0] *= (1/65535.0)
-	p[1] *= (1/65535.0)
-	p[2] *= (1/65535.0)
+	p[0] *= (1 / 65535.0)
+	p[1] *= (1 / 65535.0)
+	p[2] *= (1 / 65535.0)
 	return p
 }
 
@@ -59,13 +59,14 @@ func (*scaler16bClamping) ScaleInv(p Point) Point {
 type gammaCompander struct {
 	gamma, igamma float64
 }
+
 // GammaCompander is used for RGB spaces with a simple power (γ) function
 var GammaCompander gammaCompander
 
 func (*gammaCompander) Init(ws *RGBSpace) Compander {
 	return &gammaCompander{
-		gamma: float64(ws.Gamma),
-		igamma: float64(1/ws.Gamma),
+		gamma:  float64(ws.Gamma),
+		igamma: float64(1 / ws.Gamma),
 	}
 }
 
@@ -115,7 +116,8 @@ func (c *gammaCompander) Linearize(p Point) Point {
 	return p
 }
 
-type sRGBCompander struct {}
+type sRGBCompander struct{}
+
 // SRGBCompander provides the companding γ function as specified for sRGB.
 var SRGBCompander sRGBCompander
 
@@ -204,7 +206,8 @@ func (*sRGBCompander) Linearize(p Point) Point {
 var sRGBFastCompanderOnce sync.Once
 var sRGBFastCompanderTable []float64
 
-type sRGBFastCompander struct {}
+type sRGBFastCompander struct{}
+
 // SRGBFastCompander provides both a compander and scaler for 8-bit sRGB using a lookup table for linearization
 // This compander should not be used with a scaler since it provides both scaling and the γ function.
 var SRGBFastCompander sRGBFastCompander
@@ -213,7 +216,7 @@ func sRGBFastCompanderInit() {
 	sRGBFastCompanderTable = make([]float64, 256)
 
 	for i := 0; i < 256; i++ {
-		v := float64(i)/255.0
+		v := float64(i) / 255.0
 		if v <= 0.04045 {
 			v = v / 12.92
 		} else {
@@ -246,7 +249,8 @@ func (*sRGBFastCompander) Linearize(p Point) Point {
 	return Point{vInRange(p[0]), vInRange(p[1]), vInRange(p[2])}
 }
 
-type lstarCompander struct {}
+type lstarCompander struct{}
+
 // LstarCompander is a compander used for L* gamma response used in working spaces such
 // as ECI RGB and in alternative RGB calibrated workflows.
 var LstarCompander lstarCompander
@@ -255,11 +259,13 @@ func (*lstarCompander) Init(ws *RGBSpace) Compander { return &LstarCompander }
 
 func (*lstarCompander) Compand(p Point) Point {
 	l := p[0]
-	if l < 0.0 { l = -l }
+	if l < 0.0 {
+		l = -l
+	}
 	if l <= 216.0/24389.0 {
 		l = l * 24389.0 / 2700.0
 	} else {
-		l = 1.16 * math.Cbrt(l) - 0.16
+		l = 1.16*math.Cbrt(l) - 0.16
 	}
 	if p[0] < 0.0 {
 		l = -l
@@ -267,11 +273,13 @@ func (*lstarCompander) Compand(p Point) Point {
 	p[0] = l
 
 	l = p[1]
-	if l < 0.0 { l = -l }
+	if l < 0.0 {
+		l = -l
+	}
 	if l <= 216.0/24389.0 {
 		l = l * 24389.0 / 2700.0
 	} else {
-		l = 1.16 * math.Cbrt(l) - 0.16
+		l = 1.16*math.Cbrt(l) - 0.16
 	}
 	if p[1] < 0.0 {
 		l = -l
@@ -279,11 +287,13 @@ func (*lstarCompander) Compand(p Point) Point {
 	p[1] = l
 
 	l = p[2]
-	if l < 0.0 { l = -l }
+	if l < 0.0 {
+		l = -l
+	}
 	if l <= 216.0/24389.0 {
 		l = l * 24389.0 / 2700.0
 	} else {
-		l = 1.16 * math.Cbrt(l) - 0.16
+		l = 1.16*math.Cbrt(l) - 0.16
 	}
 	if p[2] < 0.0 {
 		l = -l
@@ -294,11 +304,13 @@ func (*lstarCompander) Compand(p Point) Point {
 
 func (*lstarCompander) Linearize(p Point) Point {
 	c := p[0]
-	if c < 0.0 { c = -c }
+	if c < 0.0 {
+		c = -c
+	}
 	if c <= 0.08 {
 		c = 2700.0 * c / 24389.0
 	} else {
-		c = (((1000000.0 * c + 480000.0) * c + 76800.0) * c + 4096.0) / 1560896.0
+		c = (((1000000.0*c+480000.0)*c+76800.0)*c + 4096.0) / 1560896.0
 	}
 	if p[0] < 0.0 {
 		c = -c
@@ -306,11 +318,13 @@ func (*lstarCompander) Linearize(p Point) Point {
 	p[0] = c
 
 	c = p[1]
-	if c < 0.0 { c = -c }
+	if c < 0.0 {
+		c = -c
+	}
 	if c <= 0.08 {
 		c = 2700.0 * c / 24389.0
 	} else {
-		c = (((1000000.0 * c + 480000.0) * c + 76800.0) * c + 4096.0) / 1560896.0
+		c = (((1000000.0*c+480000.0)*c+76800.0)*c + 4096.0) / 1560896.0
 	}
 	if p[1] < 0.0 {
 		c = -c
@@ -318,11 +332,13 @@ func (*lstarCompander) Linearize(p Point) Point {
 	p[1] = c
 
 	c = p[2]
-	if c < 0.0 { c = -c }
+	if c < 0.0 {
+		c = -c
+	}
 	if c <= 0.08 {
 		c = 2700.0 * c / 24389.0
 	} else {
-		c = (((1000000.0 * c + 480000.0) * c + 76800.0) * c + 4096.0) / 1560896.0
+		c = (((1000000.0*c+480000.0)*c+76800.0)*c + 4096.0) / 1560896.0
 	}
 	if p[2] < 0.0 {
 		c = -c
@@ -332,7 +348,8 @@ func (*lstarCompander) Linearize(p Point) Point {
 	return p
 }
 
-type bT2020Compander struct {}
+type bT2020Compander struct{}
+
 // BT2020Compander provides a compander matching the transfer function specified by the BT.2020 (HDTV) recommendation
 // It should be usable for both 12-bit and 10-bit simulations
 var BT2020Compander bT2020Compander
@@ -343,17 +360,17 @@ func (*bT2020Compander) Compand(p Point) Point {
 	if p[0] < 0.0181 {
 		p[0] = 4.5 * p[0]
 	} else {
-		p[0] = 1.0993 * math.Exp(0.45 * math.Log(p[0])) - 0.099
+		p[0] = 1.0993*math.Exp(0.45*math.Log(p[0])) - 0.099
 	}
 	if p[1] < 0.0181 {
 		p[1] = 4.5 * p[1]
 	} else {
-		p[1] = 1.0993 * math.Exp(0.45 * math.Log(p[1])) - 0.099
+		p[1] = 1.0993*math.Exp(0.45*math.Log(p[1])) - 0.099
 	}
 	if p[2] < 0.0181 {
 		p[2] = 4.5 * p[2]
 	} else {
-		p[2] = 1.0993 * math.Exp(0.45 * math.Log(p[2])) - 0.099
+		p[2] = 1.0993*math.Exp(0.45*math.Log(p[2])) - 0.099
 	}
 	return p
 }
@@ -362,17 +379,17 @@ func (*bT2020Compander) Linearize(p Point) Point {
 	if p[0] < 0.08145 {
 		p[0] /= 4.5
 	} else {
-		p[0] = math.Exp(1/0.45 * math.Log((p[0] + 0.099)/1.099))
+		p[0] = math.Exp(1 / 0.45 * math.Log((p[0]+0.099)/1.099))
 	}
 	if p[1] < 0.08145 {
 		p[1] /= 4.5
 	} else {
-		p[1] = math.Exp(1/0.45 * math.Log((p[1] + 0.099)/1.099))
+		p[1] = math.Exp(1 / 0.45 * math.Log((p[1]+0.099)/1.099))
 	}
 	if p[2] < 0.08145 {
 		p[2] /= 4.5
 	} else {
-		p[2] = math.Exp(1/0.45 * math.Log((p[2] + 0.099)/1.099))
+		p[2] = math.Exp(1 / 0.45 * math.Log((p[2]+0.099)/1.099))
 	}
 	return p
 }

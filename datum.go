@@ -5,20 +5,20 @@ const Gamma22 = 563 / 256.0
 
 // An RGBSpace defines the parameters necessary for transforming most commonly defined RGB working
 // spaces into XYZ. The definition includes the affine linear RGB to XYZ transform, a reference to
-// an implementation of a compander from working RGB to linear RGB and 
+// an implementation of a compander from working RGB to linear RGB and
 type RGBSpace struct {
 	// Name is a short, common name for the working space
-	Name          string
+	Name string
 	// Description can provide more specific reference to a standard name and version of a standard
-	Description   string
+	Description string
 	// XyYPrimary is a definition of the tristimulus primaries for the RGB space. The transformer will use this to generate a transform matrix.
-	XyYPrimary    XyYPrimary
+	XyYPrimary XyYPrimary
 	// IlluminantRef defines the default reference illuminant for this space.
 	IlluminantRef *IlluminantRef
 	// Gamma is the default gamma for this space. It's exact use depends on the type of Compander used
-	Gamma         Gamma
+	Gamma Gamma
 	// Compander refers to an implementation of the default linearization transform from the working space to linear RGB
-	Compander     Compander
+	Compander Compander
 }
 
 // SpaceSRGB is the most commonly used sRGB RGB space as defined in IEC 61966-2-1:1999

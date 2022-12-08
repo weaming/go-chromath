@@ -5,7 +5,7 @@ type Matrix [9]float64
 
 // Mul multiplies the receiver with a scalar
 func (a Matrix) Mul(b float64) Matrix {
-	return Matrix{a[0]*b, a[1]*b, a[2]*b, a[3]*b, a[4]*b, a[5]*b, a[6]*b, a[7]*b, a[8]*b}
+	return Matrix{a[0] * b, a[1] * b, a[2] * b, a[3] * b, a[4] * b, a[5] * b, a[6] * b, a[7] * b, a[8] * b}
 }
 
 // Mul3x1 returns the product of the receiver with the passed in point, which is treated as a column vector.
